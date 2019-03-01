@@ -6,7 +6,7 @@
   "homepage": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/reactma/tscat.git"
+    "url": "https://github.com/github/typecat.git"
   },
   "description": "A small functional programming library for TypeScript that provides Option (Some/None) and Either(Left/Right) with functor map, applicative map and monad flatmap",
   "author": "Reactma",
