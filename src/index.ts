@@ -1,7 +1,7 @@
 export const id = (a: any) => a
 
 export interface Functor<T> {
-  fmap<S>(f: ( a: T | undefined | null) => S): Functor<S>
+  fmap<S>(f: ( a: T) => S): Functor<S>
 }
 
 export interface Applicative<T> extends Functor<T> {
@@ -9,14 +9,14 @@ export interface Applicative<T> extends Functor<T> {
 }
 
 export interface Monad<T> extends Applicative<T> {
-  flatMap<S>(f: (a: T | undefined | null) => Monad<S>): Monad<S>
+  flatMap<S>(f: (a: T) => Monad<S>): Monad<S>
 }
 
 export abstract class Option<T> implements Monad<T> {
-  abstract _value : T | undefined | null
-  abstract fmap<S>(f: ( a: T | undefined | null) => S): Functor<S>
+  abstract _value? : T
+  abstract fmap<S>(f: ( a: T) => S): Functor<S>
   abstract applyMap(a: Applicative<T>): Applicative<any>
-  abstract flatMap<S>(f: (a: T | undefined | null) => Monad<S>): Monad<S>
+  abstract flatMap<S>(f: (a: T) => Monad<S>): Monad<S>
 
     *[Symbol.iterator]() {
       if (this instanceof Some) yield this._value
@@ -27,14 +27,19 @@ export abstract class Option<T> implements Monad<T> {
 
 export class Some<T> extends Option<T> {
 
-  _value : T | undefined | null
-  constructor( a : T | undefined | null ) {
+  _value? : T
+  constructor( a : T ) {
+
+    if( a === undefined || a === null )
+      throw TypeError('Some can\'t be initated with undefined or null')
+
     super()
     this._value = a
+    
   }
 
-  fmap<S> (f:(a: T | undefined | null) => S): Some<S> {
-    return new Some<S>(f( this._value ))
+  fmap<S> (f:(a: T) => S): Some<S> {
+    return new Some<S>(f( this._value! ))
   }
 
   applyMap(a: Option<any>): Option<any> {
@@ -47,18 +52,17 @@ export class Some<T> extends Option<T> {
     return new Some(f!(a._value))
   }
 
-  flatMap<S>(f: (a: T | undefined | null) => Option<S>): Option<S> {
-    return f(this._value)
+  flatMap<S>(f: (a: T) => Option<S>): Option<S> {
+    return f(this._value!)
   }
 
 }
 
 export class None<T = any> extends Option<T> {
 
-  _value : T | undefined | null
+  _value? : T
   constructor() {
     super()
-    this._value = undefined
   }
 
   fmap<S> ( f:any ): Some<S> {
@@ -81,7 +85,7 @@ export abstract class  Either<T,S> implements Monad<S> {
 
   abstract fmap<U>(f: (a: S) => U): Functor<U>
   abstract  applyMap(a: Applicative<any>): Applicative<any>
-    abstract flatMap<U>(f: (a: S | undefined | null) => Monad<U>): Monad<U>
+    abstract flatMap<U>(f: (a: S) => Monad<U>): Monad<U>
 
     *[Symbol.iterator](): any {
       if (this instanceof Right) yield this._right

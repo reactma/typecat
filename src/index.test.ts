@@ -66,25 +66,6 @@ describe('Option functor', () => {
     expect(a.fmap(f)).toEqual(new None())
   })
 
-  test(' Some(undefined).fmap(f) = Some(f(undefined))', () => {
-    const i = undefined
-
-    const a = new Some(i)
-
-    const f = (a: number | undefined |null) => 3
-
-    expect(a.fmap(f)).toEqual(new Some(f(i)))
-  })
-
-  test(' Some(null).fmap(f) = Some(f(null))', () => {
-    const i = null
-
-    const a = new Some(i)
-
-    const f = (a: number | null | undefined) => 3
-
-    expect(a.fmap(f)).toEqual(new Some(f(i)))
-  })
 })
 
 describe('Option applicative', () => {
@@ -101,13 +82,6 @@ describe('Option applicative', () => {
     const f = (a: number) => a + 2
 
     expect(new Some(f).applyMap(a)).toEqual(new Some(f(i)))
-  })
-
-  test('Some(f).applyMap( Some(undefined)) = (Some(f(undefined))', () => {
-    const a = new Some(undefined)
-    const f = (a: number | undefined) => 2
-
-    expect(new Some(f).applyMap(a)).toEqual(new Some(f(undefined)))
   })
 
   test('Some(f(a,b)).applyMap( Some(a)).applyMap(Some(b)) = (Some(f(a,b))', () => {
@@ -139,17 +113,6 @@ describe('Option iterator', () => {
     expect(w).not.toBe(1)
   })
 
-  test('for iterator of Some(undefined) equals undefined ', () => {
-    const a = new Some(undefined)
-
-    for (const b of a) expect(b).toEqual(undefined)
-  })
-
-  test('for iterator of Some(null) equals null ', () => {
-    const a = new Some(null)
-
-    for (const b of a) expect(b).toEqual(null)
-  })
 })
 
 describe('Option monad', () => {
@@ -282,4 +245,39 @@ describe('Either monad', () => {
   })
 
 
+})
+
+describe('Extra None test cases ', () => {
+
+  const option = new Some(3).fmap( ( i: number ) => i * 2 )
+
+  for( const i of option )
+    console.log( i )
+
+  const failed = new Some( 0 ).
+    flatMap( ( i: number ) => i === 0 ? new None() : new Some ( 1 / i ) ).
+    fmap( (w: number) => `inverse is ${w}` )
+
+  console.log(failed)
+  // failed is None
+
+  const either = new Right(25).fmap( ( i: number ) => i > 20 ? true : false )
+    .flatMap( ( t: boolean ) => t ? new Right( 'Ok' ) : new Left( 'Fail' ) )
+
+  console.log(either) // either = Right('Ok')
+
+  const triplePlus = new Some( (a: number) => (b: number) => (c: number) => a + b + c )
+  const a = new Some(2)
+  const b = new Some(3)
+  const c = new Some(4)
+  const d = new None()
+
+
+  const plusedA = triplePlus.applyMap(a).applyMap(b).applyMap(c) // plusdA = Some( 2 + 3 + 4 )
+
+  console.log(plusedA) // plusedA = Some(9)
+
+  const plusedB = triplePlus.applyMap(a).applyMap(b).applyMap(d) // plusedB = None()
+  console.log(plusedB) // plusedB: None
+  
 })
