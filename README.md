@@ -19,6 +19,13 @@ It is decided explicitly that Some / Right can't be initated with undefined and 
 
 The reason is to simplify and also streamline the functions used for fmap, applicativeMap and flatMap.
 
+### get getOrElse, getLeft, getLeftOrElse
+
+TypeCat provides methods to take out value from Option/Either
+
+- get / getOrElse : Option / Either. If None or Left, get will throw exception. Use getOrElse (defaultValue)
+- getLeft / getLeftOrElse: Either. If Right, getLeft will throw exception. Use getLeftOrElse(defaultValue)
+
 ### Usage
 
 ### Install
@@ -58,8 +65,19 @@ const b = new Some(3)
 const c = new Some(4)
 const d = new None()
 
-const plusedA = triplePlus.applyMap(a).applyMap(b).applyMap(c) // plusdA = Some( 2 + 3 + 4 )
+  const plusedA = triplePlus.applyMap(a).applyMap(b).applyMap(c) // plusdA = Some( 2 + 3 + 4 )
 
-const plusedB = triplePlus.applyMap(a).applyMap(b).applyMap(d) // plusedB = None()
+  console.log(plusedA) // plusedA = Some(9)
+
+  const ra = (plusedA as Option<number>).get() // r = 9
+
+
+  const plusedB = triplePlus.applyMap(a).applyMap(b).applyMap(d) // plusedB = None()
+  const rb = (plusedB as Option<number>).get() // Exception thrown : Value not exist in None
+  const rc = (plusedB as Option<number>).getOrElse(0) // rc = 0
+
+  console.log(ra)
+  console.log(rb)
+  console.log(rc)
 
 ```

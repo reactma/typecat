@@ -1,6 +1,6 @@
 {
   "defaultSeverity": "error",
-  "extends": ["tslint:latest", "tslint-react"],
+  "extends": ["tslint:latest"],
   "jsRules": {},
   "rules": {
     "quotemark": [true, "single"],
@@ -16,7 +16,11 @@
     "max-line-length": false,
     "max-len": ["error", { "ignoreStrings": true }],
     "no-string-literal": false,
-    "prefer-conditional-expression": false
+    "interface-name": false,
+    "prefer-conditional-expression": false,
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
+    "member-access": false,
+    "max-classes-per-file": false
   },
   "rulesDirectory": [],
   "linterOptions" : {

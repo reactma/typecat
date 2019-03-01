@@ -277,7 +277,15 @@ describe('Extra None test cases ', () => {
 
   console.log(plusedA) // plusedA = Some(9)
 
+  const ra = (plusedA as Option<number>).get() // r = 9
+
+
   const plusedB = triplePlus.applyMap(a).applyMap(b).applyMap(d) // plusedB = None()
-  console.log(plusedB) // plusedB: None
-  
+  const rb = (plusedB as Option<number>).get() // Exception thrown : Value not exist in None
+  const rc = (plusedB as Option<number>).getOrElse(0) // rc = 0
+
+  console.log(ra)
+  console.log(rb)
+  console.log(rc)
+
 })
