@@ -1,5 +1,5 @@
 {
-  "name": "tscat",
+  "name": "typecat",
   "version": "0.0.1",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -8,7 +8,7 @@
     "type": "git",
     "url": "https://github.com/reactma/tscat.git"
   },
-  "description": "A functional programming library for TypeScript",
+  "description": "A small functional programming library for TypeScript that provides Option (Some/None) and Either(Left/Right) with functor map, applicative map and monad flatmap",
   "author": "Reactma",
   "license": "MIT",
   "devDependencies": {
@@ -20,7 +20,8 @@
     "tslint": "^5.12.1",
     "tslint-config-prettier": "^1.18.0",
     "typedoc": "^0.14.2",
-    "typescript": "^3.3.3"
+    "typescript": "^3.3.3",
+    "@types/jest": "^24.0.9"
   },
   "scripts": {
     "clean": "rimraf dist lib doc",
@@ -48,7 +49,6 @@
     "Either"
   ],
   "dependencies": {
-    "@types/jest": "^24.0.9"
   },
   "peerDependencies": {}
 }

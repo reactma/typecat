@@ -1,4 +1,4 @@
-import { id, Option, Some, None, Either, Left, Right } from './indexCat'
+import { id, Option, Some, None, Either, Left, Right } from './index'
 
 describe('id', () => {
   test('for any value, id returns exactly the same value', () => {
