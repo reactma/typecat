@@ -9,7 +9,9 @@ TypeCat is a tiny, zero dependency TypeScript library that supplements that miss
 
 Classical functional operators fmap, applyMap ( applicative map as in Haskell ) and flatMap ( monad map as in Haskell and Scala ).
 
-The types and the operators meet the laws of Functorm Applicative and Monad.
+Iterator is also added so that you can use convenient `for` expression on the types.
+
+The types and the operators meet the laws of Functor, Applicative and Monad.
 
 ### Usage
 

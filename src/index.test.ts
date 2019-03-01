@@ -53,7 +53,7 @@ describe('Option functor', () => {
     const i = 5
     const a = new Some<number>(i)
 
-    const f = (a: number | undefined | null ) => a! + 2
+    const f = (a: number | undefined |null) => a! + 2
 
     expect(a.fmap(f)).toEqual(new Some(f(i)))
   })
