@@ -35,7 +35,7 @@ export class Some<T> extends Option<T> {
 
     super()
     this._value = a
-    
+
   }
 
   fmap<S> (f:(a: T) => S): Some<S> {
@@ -99,6 +99,9 @@ export class Left<T> extends Either<T,any> {
   _right?: any
 
   constructor( a: T ) {
+    if( a === undefined || a === null )
+      throw TypeError('Either can\'t be initated with undefined or null')
+
     super()
     this._left = a
     this._right = undefined

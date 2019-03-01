@@ -13,6 +13,12 @@ Iterator is also added so that you can use convenient `for` expression on the ty
 
 The types and the operators meet the laws of Functor, Applicative and Monad.
 
+### undefined and null
+
+It is decided explicitly that Some / Right can't be initated with undefined and null. TypeError will throwed if tried.
+
+The reason is to simplify and also streamline the functions used for fmap, applicativeMap and flatMap.
+
 ### Usage
 
 ### Install
