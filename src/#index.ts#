@@ -1,7 +1,7 @@
 export const id = (a: any) => a
 
-export interface Functor<T> {
-  fmap(f: (a: T) => any): Functor<any>
+export interface Functor {
+  fmap<T,S>(f: (a: T) => S): Functor<any>
 }
 
 export interface Applicative<T> extends Functor<T> {
