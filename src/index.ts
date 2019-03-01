@@ -1,9 +1,151 @@
 export const id = (a: any) => a
 
 export interface Functor<T> {
-  fmap(f: (a: T) => any): Functor<any>
+  fmap<S>(f: ( a: T | undefined | null) => S): Functor<S>
 }
 
+export interface Applicative<T> extends Functor<T> {
+  applyMap(a: Applicative<T>): Applicative<any>
+}
+
+export interface Monad<T> extends Applicative<T> {
+  flatMap<S>(f: (a: T | undefined | null) => Monad<S>): Monad<S>
+}
+
+export abstract class Option<T> implements Monad<T> {
+  abstract _value : T | undefined | null
+  abstract fmap<S>(f: ( a: T | undefined | null) => S): Functor<S>
+  abstract applyMap(a: Applicative<T>): Applicative<any>
+  abstract flatMap<S>(f: (a: T | undefined | null) => Monad<S>): Monad<S>
+
+    *[Symbol.iterator]() {
+      if (this instanceof Some) yield this._value
+      else return
+    }
+
+}
+
+export class Some<T> extends Option<T> {
+
+  _value : T | undefined | null
+  constructor( a : T | undefined | null ) {
+    super()
+    this._value = a
+  }
+
+  fmap<S> (f:(a: T | undefined | null) => S): Some<S> {
+    return new Some<S>(f( this._value ))
+  }
+
+  applyMap(a: Option<any>): Option<any> {
+    if (a instanceof None) return new None()
+
+    if (this._value === undefined || this._value === null) return new None()
+
+    const f = (this as any)._value as (a: any) => any
+
+    return new Some(f!(a._value))
+  }
+
+  flatMap<S>(f: (a: T | undefined | null) => Option<S>): Option<S> {
+    return f(this._value)
+  }
+
+}
+
+export class None<T = any> extends Option<T> {
+
+  _value : T | undefined | null
+  constructor() {
+    super()
+    this._value = undefined
+  }
+
+  fmap<S> ( f:any ): Some<S> {
+    return new None()
+  }
+
+  applyMap(a: any): Option<any> {
+    return new None()
+  }
+
+  flatMap(f: any): Option<any> {
+    return new None()
+  }
+}
+
+
+export abstract class  Either<T,S> implements Monad<S> {
+  abstract _left?: T
+  abstract _right?: S
+
+  abstract fmap<U>(f: (a: S) => U): Functor<U>
+  abstract  applyMap(a: Applicative<any>): Applicative<any>
+    abstract flatMap<U>(f: (a: S | undefined | null) => Monad<U>): Monad<U>
+
+    *[Symbol.iterator](): any {
+      if (this instanceof Right) yield this._right
+      else return
+    }
+}
+
+export class Left<T> extends Either<T,any> {
+
+  _left?: T
+  _right?: any
+
+  constructor( a: T ) {
+    super()
+    this._left = a
+    this._right = undefined
+  }
+
+  fmap<U>( f:any) : Either<T, any> {
+    return new Left(this._left)
+  }
+
+  applyMap( a: any) : Either<T, any> {
+    return new Left(this._left)
+  }
+
+  flatMap<U>( f: any) : Either<T, U> {
+    return new Left(this._left)
+  }
+
+}
+
+export class Right<S> extends Either<any,S> {
+
+  _left?: any
+  _right?: S
+
+  constructor( a: S ) {
+    super()
+    this._left = undefined
+    this._right = a
+  }
+
+  fmap<U>(f: (a:S) => U) : Either<any, U> {
+    return new Right<U>( f( this._right! ) )
+  }
+
+  applyMap( a: Either<any,any>) : Either<any, any> {
+
+    if( a instanceof Left)
+      return a
+    else{
+      const f = (this as any)._right as (a:S) => any
+      return new Right( f!( a._right! ))
+    }
+  }
+
+  flatMap<U>( f: (a: S) => Either<any,U>) : Either<any, U> {
+    return f(this._right!)
+  }
+
+}
+
+/*
 export interface Applicative<T> extends Functor<T> {
   applyMap(a: Applicative<any>): Applicative<any>
 }
@@ -72,73 +214,4 @@ export class None<T = any> extends Option<T> {
     return new None()
   }
 }
-
-export abstract class  Either<T,S> implements Monad<S> {
-  abstract _left?: T
-  abstract _right?: S
-
-  abstract fmap(f: (a: S) => any): Functor<any>
-  abstract  applyMap(a: Applicative<any>): Applicative<any>
-    abstract flatMap(f: (a: S | undefined | null) => Monad<any>): Monad<any>
-
-    *[Symbol.iterator](): any {
-      if (this instanceof Right) yield this._right
-      else return
-    }
-}
-
-export class Left<T,S> extends Either<T,S> {
-
-  _left?: T
-  _right?: S
-
-  constructor( a: T ) {
-    super()
-    this._left = a
-    this._right = undefined
-  }
-
-  fmap( f: (a: S) => any) : Either<T, any> {
-    return new Left(this._left)
-  }
-
-  applyMap( a: Either<T,S>) : Either<T, any> {
-    return new Left(this._left)
-  }
-
-  flatMap( f: (a: S) => Either<T,any>) : Either<T, any> {
-    return new Left(this._left)
-  }
-
-}
-
-export class Right<T,S> extends Either<T,S> {
-
-  _left?: T
-  _right?: S
-
-  constructor( a: S ) {
-    super()
-    this._left = undefined
-    this._right = a
-  }
-
-  fmap(f: (a:S) => any) : Either<T, any> {
-    return new Right<T, any>( f( this._right! ) )
-  }
-
-  applyMap( a: Either<T,any>) : Either<T, any> {
-
-    if( a instanceof Left)
-      return a
-    else{
-      const f = (this as any)._right as (a:S) => any
-      return new Right( f!( a._right! ))
-    }
-  }
-
-  flatMap( f: (a: S) => Either<T,any>) : Either<T, any> {
-    return f(this._right!)
-  }
-
-}
+*/
