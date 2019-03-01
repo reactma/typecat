@@ -12,7 +12,6 @@
   "author": "Reactma",
   "license": "MIT",
   "devDependencies": {
-    "cpx": "^1.5.0",
     "jest": "^24.1.0",
     "npm-run-all": "^4.1.5",
     "prettier": "1.16.4",
@@ -25,13 +24,12 @@
   },
   "scripts": {
     "clean": "rimraf dist lib doc",
-    "cpcss": "cpx './src/*.{css,js}' ./lib/",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p .",
     "test": "jest",
     "doc": "typedoc ./src",
     "compile": "tsc",
-    "build": "npm-run-all clean compile cpcss"
+    "build": "npm-run-all clean compile"
   },
   "files": [
     "lib/**/*"
