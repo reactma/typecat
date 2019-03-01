@@ -53,7 +53,7 @@ describe('Option functor', () => {
     const i = 5
     const a = new Some<number>(i)
 
-    const f = (a: number | undefined |null) => a! + 2
+    const f = (a: number | undefined | null) => a! + 2
 
     expect(a.fmap(f)).toEqual(new Some(f(i)))
   })
@@ -65,7 +65,6 @@ describe('Option functor', () => {
 
     expect(a.fmap(f)).toEqual(new None())
   })
-
 })
 
 describe('Option applicative', () => {
@@ -112,7 +111,6 @@ describe('Option iterator', () => {
     }
     expect(w).not.toBe(1)
   })
-
 })
 
 describe('Option monad', () => {
@@ -143,7 +141,6 @@ describe('Option monad', () => {
 })
 
 describe('Either functor', () => {
-
   test('Law: Right.fmap(id) === id(Right)', () => {
     const a = new Right(33)
 
@@ -151,7 +148,7 @@ describe('Either functor', () => {
   })
 
   test('Law Left.fmap(id) = id(Left)', () => {
-    const a = new Left( 44 )
+    const a = new Left(44)
 
     expect(a.fmap(id)).toEqual(id(a))
   })
@@ -173,12 +170,9 @@ describe('Either functor', () => {
 
     expect(a.fmap(f)).toEqual(new Left(i))
   })
-
 })
 
-
 describe('Either applicative', () => {
-
   test('Law: Right.applyMap(Right(id)) === id(Right)', () => {
     const a = new Right(33)
     const rid = new Right(id)
@@ -206,24 +200,21 @@ describe('Either applicative', () => {
 
     expect(a.applyMap(b)).toEqual(b)
   })
-
 })
 
-
 describe('Either monad', () => {
-
   test('Law: Right.flatMap( f:(a) => Right(b)  === Right(b)', () => {
     const i = 33
     const a = new Right(33)
-    const f = (a: number) => new Right( (a as any).toString() )
+    const f = (a: number) => new Right((a as any).toString())
 
-    expect(a.flatMap(f)).toEqual(new Right( i.toString()))
+    expect(a.flatMap(f)).toEqual(new Right(i.toString()))
   })
 
   test('Law: Left.flatMap( f:(a) => Right(b)  === Left', () => {
     const i = 33
     const a = new Left(i)
-    const f = (a: number) => new Right( (a as any).toString() )
+    const f = (a: number) => new Right((a as any).toString())
 
     expect(a.flatMap(f)).toEqual(new Left(i))
   })
@@ -231,61 +222,71 @@ describe('Either monad', () => {
   test('Law: Right.flatMap( f:(a) => Left(b)  === Left(b)', () => {
     const i = 33
     const a = new Right(33)
-    const f = (a: number) => new Left( a * 2 )
+    const f = (a: number) => new Left(a * 2)
 
-    expect(a.flatMap(f)).toEqual(new Left( i * 2 ))
+    expect(a.flatMap(f)).toEqual(new Left(i * 2))
   })
 
   test('Law: Left.flatMap( f:(a) => Left(b)  === Left', () => {
     const i = 33
     const a = new Left(i)
-    const f = (a: number) => new Left( (a as any).toString() )
+    const f = (a: number) => new Left((a as any).toString())
 
     expect(a.flatMap(f)).toEqual(new Left(i.toString()))
   })
-
-
 })
 
 describe('Extra None test cases ', () => {
+  const option = new Some(3).fmap((i: number) => i * 2)
 
-  const option = new Some(3).fmap( ( i: number ) => i * 2 )
+  console.log(option)
 
-  for( const i of option )
-    console.log( i )
+  for (const i of option) console.log(i)
 
-  const failed = new Some( 0 ).
-    flatMap( ( i: number ) => i === 0 ? new None() : new Some ( 1 / i ) ).
-    fmap( (w: number) => `inverse is ${w}` )
+  const failed = new Some(0)
+    .flatMap((i: number) => (i === 0 ? new None() : new Some(1 / i)))
+    .fmap((w: number) => `inverse is ${w}`)
 
   console.log(failed)
   // failed is None
 
-  const either = new Right(25).fmap( ( i: number ) => i > 20 ? true : false )
-    .flatMap( ( t: boolean ) => t ? new Right( 'Ok' ) : new Left( 'Fail' ) )
+  const succeeded = new Some(10)
+    .flatMap((i: number) => (i === 0 ? new None() : new Some(1 / i)))
+    .fmap((w: number) => `inverse is ${w}`)
+  // succeeded = Some { _value: 'inverse is 0.1'}
+
+  console.log(succeeded)
+
+  const either = new Right(25)
+    .fmap((i: number) => (i > 20 ? true : false))
+    .flatMap((t: boolean) => (t ? new Right('Ok') : new Left('Fail')))
 
   console.log(either) // either = Right('Ok')
 
-  const triplePlus = new Some( (a: number) => (b: number) => (c: number) => a + b + c )
+  const triplePlusF = (a: number) => (b: number) => (c: number) => a + b + c
+  const triplePlus = new Some(triplePlusF)
   const a = new Some(2)
   const b = new Some(3)
   const c = new Some(4)
   const d = new None()
 
-
-  const plusedA = triplePlus.applyMap(a).applyMap(b).applyMap(c) // plusdA = Some( 2 + 3 + 4 )
+  const plusedA = triplePlus
+    .applyMap(a)
+    .applyMap(b)
+    .applyMap(c) // plusdA = Some( 2 + 3 + 4 )
 
   console.log(plusedA) // plusedA = Some(9)
 
   const ra = (plusedA as Option<number>).get() // r = 9
 
-
-  const plusedB = triplePlus.applyMap(a).applyMap(b).applyMap(d) // plusedB = None()
+  const plusedB = triplePlus
+    .applyMap(a)
+    .applyMap(b)
+    .applyMap(d) // plusedB = None()
   const rb = (plusedB as Option<number>).get() // Exception thrown : Value not exist in None
   const rc = (plusedB as Option<number>).getOrElse(0) // rc = 0
 
   console.log(ra)
   console.log(rb)
   console.log(rc)
-
 })

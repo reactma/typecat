@@ -43,10 +43,12 @@ import { id, Option, Some, None, Either, Left, Right } from 'typecat'
 
 const option = new Some(3).fmap( ( i: number ) => i * 2 ) 
 
-// option = Some( b )
+// option = Some( 6 )
+
+console.log( option )
 
 for( const i of option ) 
-    console.log( i )  // Console output 3
+    console.log( i )  // Console output 6
     
 const failed = new Some( 0 ).
     flatMap( ( i: number ) => i === 0 ? new None() : new Some ( 1 / i ) ).
@@ -54,30 +56,41 @@ const failed = new Some( 0 ).
     
     // failed = None
 
+console.log(failed)
+
+const succeeded = new Some( 10 ).
+    flatMap( ( i: number ) => i === 0 ? new None() : new Some ( 1 / i ) ).
+    fmap( (w: number) => `inverse is ${w}` )
+    
+    // succeeded = Some(0.1)
+    
+console.log(succeeded)
+
 const either = new Right(25).fmap( ( i: number ) => i > 20 ? true : false )
     .flatMap( ( t: boolean ) => t ? Right( 'Ok' ) : Left( 'Fail' ) )
     
     // Either = Right('Ok')
+const triplePlusF = (a: number) => (b: number) => (c: number) => a + b + c
+const triplePlus = new Some(triplePlusF)
     
-const triplePlus = new Some( (a: number) => (b: number) => (c: number) => a + b + c )
 const a = new Some(2)
 const b = new Some(3)
 const c = new Some(4)
 const d = new None()
 
-  const plusedA = triplePlus.applyMap(a).applyMap(b).applyMap(c) // plusdA = Some( 2 + 3 + 4 )
+const plusedA = triplePlus.applyMap(a).applyMap(b).applyMap(c) // plusdA = Some( 2 + 3 + 4 )
 
-  console.log(plusedA) // plusedA = Some(9)
+console.log(plusedA) // plusedA = Some(9)
 
-  const ra = (plusedA as Option<number>).get() // r = 9
+const ra = (plusedA as Option<number>).get() // r = 9
 
 
-  const plusedB = triplePlus.applyMap(a).applyMap(b).applyMap(d) // plusedB = None()
-  const rb = (plusedB as Option<number>).get() // Exception thrown : Value not exist in None
-  const rc = (plusedB as Option<number>).getOrElse(0) // rc = 0
+const plusedB = triplePlus.applyMap(a).applyMap(b).applyMap(d) // plusedB = None()
+const rb = (plusedB as Option<number>).get() // Exception thrown : Value not exist in None
+const rc = (plusedB as Option<number>).getOrElse(0) // rc = 0
 
-  console.log(ra)
-  console.log(rb)
-  console.log(rc)
+console.log(ra)
+console.log(rb)
+console.log(rc)
 
 ```
