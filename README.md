@@ -1,6 +1,5 @@
 # TypeCat
 
-## [Documentation @ Gitbook](https://typecat.gitbook.io/project/)
 
 ## Introduction 
 
@@ -15,6 +14,7 @@ Iterator is also added so that you can use convenient `for` expression on the ty
 
 The types and the operators meet the laws of Functor, Applicative and Monad.
 
+### [Documentation @ Gitbook](https://typecat.gitbook.io/project/)
 
 ### undefined and null
 
