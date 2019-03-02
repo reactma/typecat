@@ -67,7 +67,7 @@ const succeeded = new Some( 10 ).
 console.log(succeeded)
 
 const either = new Right(25).fmap( ( i: number ) => i > 20 ? true : false )
-    .flatMap( ( t: boolean ) => t ? Right( 'Ok' ) : Left( 'Fail' ) )
+    .flatMap( ( t: boolean ) => t ? new Right( 'Ok' ) : new Left( 'Fail' ) )
     
     // Either = Right('Ok')
 const triplePlusF = (a: number) => (b: number) => (c: number) => a + b + c
@@ -82,7 +82,7 @@ const plusedA = triplePlus.applyMap(a).applyMap(b).applyMap(c) // plusdA = Some(
 
 console.log(plusedA) // plusedA = Some(9)
 
-const ra = (plusedA as Option<number>).get() // r = 9
+const ra = (plusedA as Option<number>).get() // ra = 9
 
 
 const plusedB = triplePlus.applyMap(a).applyMap(b).applyMap(d) // plusedB = None()
