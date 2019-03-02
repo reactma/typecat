@@ -1,6 +1,8 @@
 # TypeCat
 
-## Introduction
+## [Documentation @ Gitbook](https://typecat.gitbook.io/project/)
+
+## Introduction 
 
 TypeCat is a tiny, zero dependency TypeScript library that supplements the missing but very practical types (classes in TypeScript term) you can find in typical functional programming laugages such as Scala or Haskell:
 
@@ -13,7 +15,6 @@ Iterator is also added so that you can use convenient `for` expression on the ty
 
 The types and the operators meet the laws of Functor, Applicative and Monad.
 
-**[Documentation @ Gitbook](https://typecat.gitbook.io/project/)**
 
 ### undefined and null
 
