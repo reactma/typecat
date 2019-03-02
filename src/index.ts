@@ -51,8 +51,6 @@ export class Some<T> extends Option<T> {
   applyMap(a: Option<any>): Option<any> {
     if (a instanceof None) return new None()
 
-    if (this._value === undefined || this._value === null) return new None()
-
     const f = (this as any)._value as (a: any) => any
 
     return new Some(f!(a._value))
@@ -96,12 +94,12 @@ export abstract class Either<T, S> implements Monad<S> {
   }
 
   get(): S {
-    if (this instanceof Right && this._right !== undefined) return this._right
+    if (this instanceof Right) return this._right
     else throw TypeError('Value not exist in Left')
   }
 
   getOrElse(defaultValue: S): S {
-    if (this instanceof Right && this._right !== undefined) return this._right
+    if (this instanceof Right) return this._right
     else return defaultValue
   }
 
@@ -111,7 +109,7 @@ export abstract class Either<T, S> implements Monad<S> {
   }
 
   getLeftOrElse(defaultValue: T): T {
-    if (this._left !== undefined) return this._left
+    if (this instanceof Left) return this._left!
     else return defaultValue
   }
 }
@@ -133,7 +131,7 @@ export class Left<T> extends Either<T, any> {
     return new Left(this._left!)
   }
 
-  applyMap(a: any): Either<T, any> {
+  applyMap(f: any): Either<T, any> {
     return new Left(this._left!)
   }
 
