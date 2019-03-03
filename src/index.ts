@@ -14,8 +14,8 @@ export interface Monad<T> extends Applicative<T> {
 
 export abstract class Option<T> implements Monad<T> {
   abstract _value?: T
-  abstract fmap<S>(f: (a: T) => S): Functor<S>
-  abstract applyMap(a: Applicative<T>): Applicative<any>
+  abstract fmap<S>(f: (a: T) => S): Option<S>
+  abstract applyMap(a: Option<T>): Option<any>
   abstract flatMap<S>(f: (a: T) => Monad<S>): Monad<S>
   abstract [Symbol.iterator](): IterableIterator<T>
   abstract get(): T
@@ -96,9 +96,9 @@ export abstract class Either<T, S> implements Monad<S> {
   abstract _left?: T
   abstract _right?: S
 
-  abstract fmap<U>(f: (a: S) => U): Functor<U>
-  abstract applyMap(a: Applicative<any>): Applicative<any>
-  abstract flatMap<U>(f: (a: S) => Monad<U>): Monad<U>
+  abstract fmap<U>(f: (a: S) => U): Either<T, U>
+  abstract applyMap(a: Either<T, any>): Either<T, any>
+  abstract flatMap<U>(f: (a: S) => Either<T, U>): Either<T, U>
   abstract [Symbol.iterator](): IterableIterator<S>
 
   abstract get(): S
@@ -204,3 +204,21 @@ export class Right<S> extends Either<any, S> {
     return this._right!
   }
 }
+
+const triplePlusF = (a: number) => (b: number) => (c: number) => a + b + c
+const triplePlus = new Some(triplePlusF)
+const a = new Some(2)
+const b = new Some(3)
+const c = new Some(4)
+const d = new None()
+
+const plusedA = triplePlus
+  .applyMap(a)
+  .applyMap(b)
+  .applyMap(c) // plusdA = Some( 2 + 3 + 4 )
+
+console.log(plusedA) // plusedA = Some(9)
+
+console.log('plusedA is Option? ', plusedA instanceof Option)
+const ra = plusedA.get() // r = 9
+console.log(ra)
