@@ -17,11 +17,7 @@ export abstract class Option<T> implements Monad<T> {
   abstract fmap<S>(f: (a: T) => S): Functor<S>
   abstract applyMap(a: Applicative<T>): Applicative<any>
   abstract flatMap<S>(f: (a: T) => Monad<S>): Monad<S>
-
-  *[Symbol.iterator](): IterableIterator<T> {
-    if (this instanceof Some) yield this._value
-    else return
-  }
+  abstract [Symbol.iterator](): IterableIterator<T>
 
   get(): T {
     if (this instanceof Some) return this._value
@@ -82,6 +78,10 @@ export class None<T = any> extends Option<T> {
   flatMap(f: any): Option<any> {
     return new None()
   }
+
+  *[Symbol.iterator](): IterableIterator<T> {
+    return
+  }
 }
 
 export abstract class Either<T, S> implements Monad<S> {
@@ -91,11 +91,7 @@ export abstract class Either<T, S> implements Monad<S> {
   abstract fmap<U>(f: (a: S) => U): Functor<U>
   abstract applyMap(a: Applicative<any>): Applicative<any>
   abstract flatMap<U>(f: (a: S) => Monad<U>): Monad<U>
-
-  *[Symbol.iterator](): IterableIterator<T> {
-    if (this instanceof Right) yield this._right
-    else return
-  }
+  abstract [Symbol.iterator](): IterableIterator<S>
 
   get(): S {
     if (this instanceof Right) return this._right
@@ -142,6 +138,9 @@ export class Left<T> extends Either<T, any> {
   flatMap<U>(f: any): Either<T, U> {
     return new Left(this._left!)
   }
+  *[Symbol.iterator](): IterableIterator<any> {
+    return
+  }
 }
 
 export class Right<S> extends Either<any, S> {
@@ -170,5 +169,8 @@ export class Right<S> extends Either<any, S> {
 
   flatMap<U>(f: (a: S) => Either<any, U>): Either<any, U> {
     return f(this._right!)
+  }
+  *[Symbol.iterator](): IterableIterator<S> {
+    return this._right!
   }
 }
