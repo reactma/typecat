@@ -263,6 +263,8 @@ describe('Extra None test cases ', () => {
 
   console.log(either) // either = Right('Ok')
 
+  console.log((either as Either<any, any>).getOrElse('ww'))
+
   const triplePlusF = (a: number) => (b: number) => (c: number) => a + b + c
   const triplePlus = new Some(triplePlusF)
   const a = new Some(2)

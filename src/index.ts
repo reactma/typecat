@@ -18,16 +18,8 @@ export abstract class Option<T> implements Monad<T> {
   abstract applyMap(a: Applicative<T>): Applicative<any>
   abstract flatMap<S>(f: (a: T) => Monad<S>): Monad<S>
   abstract [Symbol.iterator](): IterableIterator<T>
-
-  get(): T {
-    if (this instanceof Some) return this._value
-    else throw TypeError('Value not exist in None')
-  }
-
-  getOrElse(defaultValue: T): T {
-    if (this instanceof Some) return this._value
-    else return defaultValue
-  }
+  abstract get(): T
+  abstract getOrElse(defaultValue: T): T
 }
 
 export class Some<T> extends Option<T> {
@@ -56,6 +48,14 @@ export class Some<T> extends Option<T> {
     return f(this._value!)
   }
 
+  get(): T {
+    return this._value!
+  }
+
+  getOrElse(defaultValue: T): T {
+    return this._value!
+  }
+
   *[Symbol.iterator](): IterableIterator<T> {
     yield this._value!
   }
@@ -79,6 +79,14 @@ export class None<T = any> extends Option<T> {
     return new None()
   }
 
+  get(): T {
+    throw TypeError('Value not exist in None')
+  }
+
+  getOrElse(defaultValue: T): T {
+    return defaultValue
+  }
+
   *[Symbol.iterator](): IterableIterator<T> {
     return
   }
@@ -93,30 +101,18 @@ export abstract class Either<T, S> implements Monad<S> {
   abstract flatMap<U>(f: (a: S) => Monad<U>): Monad<U>
   abstract [Symbol.iterator](): IterableIterator<S>
 
-  get(): S {
-    if (this instanceof Right) return this._right
-    else throw TypeError('Value not exist in Left')
-  }
+  abstract get(): S
 
-  getOrElse(defaultValue: S): S {
-    if (this instanceof Right) return this._right
-    else return defaultValue
-  }
+  abstract getOrElse(defaultValue: S): S
 
-  getLeft(): T {
-    if (this instanceof Left) return this._left
-    else throw TypeError('Left value not exist in Right')
-  }
+  abstract getLeft(): T
 
-  getLeftOrElse(defaultValue: T): T {
-    if (this instanceof Left) return this._left!
-    else return defaultValue
-  }
+  abstract getLeftOrElse(defaultValue: T): T
 }
 
-export class Left<T> extends Either<T, any> {
+export class Left<T, S = any> extends Either<T, S> {
   _left?: T
-  _right?: any
+  _right?: S
 
   constructor(a: T) {
     if (a === undefined || a === null)
@@ -138,6 +134,23 @@ export class Left<T> extends Either<T, any> {
   flatMap<U>(f: any): Either<T, U> {
     return new Left(this._left!)
   }
+
+  get(): S {
+    throw TypeError('Value not exist in Left')
+  }
+
+  getOrElse(defaultValue: S): S {
+    return defaultValue
+  }
+
+  getLeft(): T {
+    return this._left!
+  }
+
+  getLeftOrElse(defaultValue: T): T {
+    return this._left!
+  }
+
   *[Symbol.iterator](): IterableIterator<any> {
     return
   }
@@ -170,6 +183,23 @@ export class Right<S> extends Either<any, S> {
   flatMap<U>(f: (a: S) => Either<any, U>): Either<any, U> {
     return f(this._right!)
   }
+
+  get(): S {
+    return this._right!
+  }
+
+  getOrElse(defaultValue: S): S {
+    return this._right!
+  }
+
+  getLeft(): any {
+    throw TypeError('Left value not exist in Right')
+  }
+
+  getLeftOrElse(defaultValue: any): any {
+    return defaultValue
+  }
+
   *[Symbol.iterator](): IterableIterator<S> {
     return this._right!
   }
