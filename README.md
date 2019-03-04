@@ -18,7 +18,7 @@ The types and the operators meet the laws of Functor, Applicative and Monad.
 
 ### undefined and null
 
-It is decided explicitly that Some / Right can't be initated with undefined and null. TypeError will throwed if tried.
+It is decided explicitly that Some / Right can't be initiated with undefined and null. TypeError will throwned if tried.
 
 The reason is to simplify and also streamline the functions used for fmap, applicativeMap and flatMap.
 
@@ -85,12 +85,12 @@ const plusedA = triplePlus.applyMap(a).applyMap(b).applyMap(c) // plusdA = Some(
 
 console.log(plusedA) // plusedA = Some(9)
 
-const ra = (plusedA as Option<number>).get() // ra = 9
+const ra = plusedA.get() // ra = 9
 
 
 const plusedB = triplePlus.applyMap(a).applyMap(b).applyMap(d) // plusedB = None()
-const rb = (plusedB as Option<number>).get() // Exception thrown : Value not exist in None
-const rc = (plusedB as Option<number>).getOrElse(0) // rc = 0
+const rb = plusedB.get() // Exception thrown : Value not exist in None
+const rc = plusedB.getOrElse(0) // rc = 0
 
 console.log(ra)
 console.log(rb)

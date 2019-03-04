@@ -16,7 +16,7 @@ export abstract class Option<T> implements Monad<T> {
   abstract _value?: T
   abstract fmap<S>(f: (a: T) => S): Option<S>
   abstract applyMap(a: Option<T>): Option<any>
-  abstract flatMap<S>(f: (a: T) => Monad<S>): Monad<S>
+  abstract flatMap<S>(f: (a: T) => Option<S>): Option<S>
   abstract [Symbol.iterator](): IterableIterator<T>
   abstract get(): T
   abstract getOrElse(defaultValue: T): T
@@ -26,7 +26,7 @@ export class Some<T> extends Option<T> {
   _value?: T
   constructor(a: T) {
     if (a === undefined || a === null)
-      throw TypeError("Some can't be initated with undefined or null")
+      throw TypeError("Some can't be initiated with undefined or null")
 
     super()
     this._value = a
