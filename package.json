@@ -1,14 +1,14 @@
 {
   "name": "typecat",
-  "version": "0.1.0",
+  "version": "0.1.16",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "homepage": "",
+  "homepage": "https://github.com/reactma/typecat",
   "repository": {
     "type": "git",
-    "url": "https://github.com/github/typecat.git"
+    "url": "https://github.com/reactma/typecat.git"
   },
-  "description": "A small functional programming library for TypeScript that provides Option (Some/None) and Either(Left/Right) with functor map, applicative map and monad flatmap",
+  "description": "A tiny functional programming library for TypeScript that provides Option (Some/None) and Either(Left/Right) with functor map, applicative map and monad flatmap",
   "author": "Reactma",
   "license": "MIT",
   "devDependencies": {
